@@ -8,7 +8,7 @@ import Product from "./tabs/product";
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function App(navigation) {
     return (
         <NavigationContainer>
             <Tab.Navigator
@@ -35,7 +35,7 @@ export default function App() {
                     inactiveTintColor: 'gray',
                 }}
             >
-                <Tab.Screen name="Scanner">{props => <Scanner {...props} navigate={navigator} />}</Tab.Screen>
+                <Tab.Screen name="Scanner" component={Scanner} navigation={navigation} />
                 <Tab.Screen name="Product" component={Product} />
                 <Tab.Screen name="Favoris" component={Favoris} />
             </Tab.Navigator>

@@ -6,7 +6,7 @@ import { NavigationContainer, TabActions } from '@react-navigation/native';
 import {Haptic} from 'expo';
 
 
-export default function App() {
+export default function Scanner({navigation}) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const jumpToAction = TabActions.jumpTo('Product', { user: 'Satya' });
@@ -18,13 +18,31 @@ export default function App() {
         })();
     }, []);
 
-    const handleBarCodeScanned = ({ type, data,  }) => {
+    const handleBarCodeScanned = ({ type, data  }) => {
         setScanned(true);
-        this.props.navigation.navigate('Product')
-        // navigation.navigate('Product');
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
         Vibration.vibrate();
-        alert(123)
+
+        fetch(`https://world.openfoodfacts.org/api/v0/product/${data}.json`)
+            .then((response) => response.json())
+            .then((responseJson) => {
+
+                // // Variante de navigate si je veux aller dans une autre pile de navigation
+                // // https://reactnavigation.org/docs/params#passing-params-to-nested-navigators
+                // this.props.navigation.navigate('Home', {
+                //     screen: 'Details',
+                //     params: { product: responseJson.product },
+                // });
+
+                navigation.navigate('Product', {
+                    product: responseJson.product,
+                });
+
+            })
+            .catch((error) =>{
+                console.error(error);
+            });
+
+
     };
 
     if (hasPermission === null) {

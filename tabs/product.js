@@ -39,9 +39,9 @@ const DATA = [
     }
 ];
 
-const addData = async () => {
+const addFav = async (route) => {
     try {
-        await AsyncStorage.setItem('favoris', [{'name':'Perrier', 'id': '3179730121884' , 'image': 'https://static.openfoodfacts.org/images/products/317/973/012/1884/front_fr.19.400.jpg'}]);
+        await AsyncStorage.setItem('favoris', {'name':route.params.product.product_name , 'image': route.params.product.image_small_url});
     } catch (error) {
         // Error saving data
     }
@@ -54,24 +54,20 @@ const Item = ({ title }) => (
     </View>
 );
 
-function Product() {
+function Product({route}) {
+
     return (
+
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>{route.params === undefined ? "No product" : route.params.product.product_name}</Text>
             <Image
-                style={styles.product}
-                source={{
-                    uri: 'https://static.openfoodfacts.org/images/products/317/973/012/1884/front_fr.19.400.jpg',
-                }}
+                source={{uri: route.params === undefined ? "No product" : route.params.product.image_small_url }}
+                style={{ alignSelf: 'center', width: 200, height: 200, borderRadius: 100 }}
             />
-            <Button title={"Add to favoris"} onPress={() => addData()}/>
-            <SectionList
-                sections={DATA}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <Item title={item} />}
-                renderSectionHeader={({ section: { title } }) => (
-                    <Text style={styles.header}>{title}</Text>
-                )}
-            />
+
+            <Text>Sel</Text>
+            <Text>{route.params === undefined ? "" : route.params.product.nutriments.salt}</Text>
+            <Button title={"Ajouter aux  favoris"} onPress={() => addFav(route)} />
         </View>
     );
 }
