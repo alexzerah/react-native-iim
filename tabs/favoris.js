@@ -1,7 +1,66 @@
 import {Text, View, FlatList, SafeAreaView, StyleSheet, Image} from "react-native";
-import React from "react";
+import React, {Component} from "react";
 import Constants from 'expo-constants';
 import * as AsyncStorage from "react-native";
+
+export default class Favoris extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            products: false
+        }
+
+
+    }
+
+    componentDidMount() {
+        const getData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('favoris');
+                jsonValue != null ? JSON.parse(jsonValue) : null
+                console.log(jsonValue)
+                this.setState({
+                    products: jsonValue
+                });
+            } catch (error) {
+                // Error retrieving data
+            }
+        };
+        getData()
+    }
+
+    render() {
+        return (
+            <View>
+                <Text>{this.state.products}</Text>
+            </View>
+            // <SafeAreaView style={styles.container}>
+            //     <FlatList
+            //         data={this.state.products}
+            //         renderItem={({ item }) => <Item title={item.title} image={item.image} />}
+            //         keyExtractor={item => item.id}
+            //     />
+            // </SafeAreaView>
+        );
+    }
+}
+
+function Item({ title, image }) {
+
+    const value = getData();
+
+    return (
+        <View style={styles.item}>
+            <Image
+                style={styles.image}
+                source={{
+                    uri: {image},
+                }}
+            />
+            <Text style={styles.title}>{title}</Text>
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -23,64 +82,6 @@ const styles = StyleSheet.create({
     }
 });
 
-const getData = async () => {
-    try {
-        const value = await AsyncStorage.getItem('favoris');
-        if (value !== null) {
-            // We have data!!
-            console.log(value);
-            // return value;
-        }
-    } catch (error) {
-        // Error retrieving data
-    }
-};
 
-const values = getData();
 
-const DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        title: 'First Item',
-        image: 'https://static.openfoodfacts.org/images/products/317/973/012/1884/front_fr.19.400.jpg'
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        title: 'Second Item',
-        image: 'https://static.openfoodfacts.org/images/products/317/973/012/1884/front_fr.19.400.jpg'
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        title: 'Third Item',
-        image: 'https://static.openfoodfacts.org/images/products/317/973/012/1884/front_fr.19.400.jpg'
-    },
-];
-
-function Item({ title, image }) {
-    return (
-        <View style={styles.item}>
-            <Image
-                style={styles.image}
-                source={{
-                    uri: {image},
-                }}
-            />
-            <Text style={styles.title}>{title}</Text>
-        </View>
-    );
-}
-
-function Favoris() {
-    return (
-        <SafeAreaView style={styles.container}>
-            <FlatList
-                data={DATA}
-                renderItem={({ item }) => <Item title={item.title} image={item.image} />}
-                keyExtractor={item => item.id}
-            />
-        </SafeAreaView>
-    );
-}
-
-export default Favoris;
 

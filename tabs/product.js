@@ -39,11 +39,12 @@ const DATA = [
     }
 ];
 
-const addFav = async (route) => {
+const addFav = async (product) => {
     try {
-        await AsyncStorage.setItem('favoris', {'name':route.params.product.product_name , 'image': route.params.product.image_small_url});
+        const jsonValue = JSON.stringify(product)
+        await AsyncStorage.setItem('favoris', jsonValue)
     } catch (error) {
-        // Error saving data
+        console.log(error)
     }
 };
 
@@ -67,7 +68,7 @@ function Product({route}) {
 
             <Text>Sel</Text>
             <Text>{route.params === undefined ? "" : route.params.product.nutriments.salt}</Text>
-            <Button title={"Ajouter aux  favoris"} onPress={() => addFav(route)} />
+            <Button title={"Ajouter aux  favoris"} onPress={() => addFav(route.params.product)} />
         </View>
     );
 }
